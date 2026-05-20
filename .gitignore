@@ -1,0 +1,5 @@
+build/
+bin/
+libs/**/*
+!libs/glad/
+!libs/glad/**
