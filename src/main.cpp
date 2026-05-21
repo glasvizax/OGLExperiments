@@ -1,14 +1,14 @@
 #include <iostream>
 #include <vector>
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 #include "VertexArray.h"
 
 int main()
 {
-	if(!glfwInit())
+	if (!glfwInit())
 	{
 		std::cerr << "could init glfw";
 	}
@@ -17,7 +17,9 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "OGLE Window", nullptr, nullptr);
+	GLFWwindow* window;
+	window = glfwCreateWindow(800, 600, "OGLE Window", nullptr, nullptr);
+
 	glfwMakeContextCurrent(window);
 
 	gladLoadGLLoader(GLADloadproc(glfwGetProcAddress));
@@ -25,11 +27,10 @@ int main()
 	glViewport(0, 0, 800, 600);
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 
-	while(!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
-		
-		
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

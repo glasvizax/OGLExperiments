@@ -5,98 +5,120 @@
 
 namespace
 {
-	#include "ShaderUniformFuncHelper.h"
+#include "ShaderUniformFuncHelper.h"
 } // namespace
 
 template <size_t N, typename T>
-inline void ShaderProgram::setVec(const std::string& name, xm::vector<N, T> vec)
+inline void ShaderProgram::setVec(uint32 hash_name, xm::vector<N, T> vec)
 {
 	static_assert(N <= 4 && N >= 2, "N must be between 2 and 4");
 	static_assert(
-		std::is_same_v<T, float> || std::is_same_v<T, double> || std::is_same_v<T, int> || std::is_same_v<T, uint> || std::is_same_v<T, size_t> || std::is_same_v<T, bool>,
-		"T must be float, double, int or uint");
+		std::is_same_v<T, float> || std::is_same_v<T, double> ||
+			std::is_same_v<T, int> || std::is_same_v<T, uint> ||
+			std::is_same_v<T, size_t> || std::is_same_v<T, bool>,
+		"T must be float, double, int or uint"
+	);
 
-	use();
-	checkGeneralErrorGL(m_debug_name);
-	GLint location = getLocation(name);
-	checkGeneralErrorGL(m_debug_name);
+	bind();
+	// checkGeneralErrorGL(m_debug_name);
+	GLint location = getLocation(hash_name);
+	// checkGeneralErrorGL(m_debug_name);
 	uniformVecFunc<N, T>(location, vec);
-	checkGeneralErrorGL(m_debug_name);
+	// checkGeneralErrorGL(m_debug_name);
 }
 
 template <size_t N, typename T>
-inline void ShaderProgram::setVecArray(const std::string& name, const xm::vector<N, T>* const array, GLsizei count)
+inline void ShaderProgram::setVecArray(
+	uint32 hash_name,
+	const xm::vector<N, T>* const array,
+	GLsizei count
+)
 {
 	static_assert(N <= 4 && N >= 2, "N must be between 2 and 4");
 	static_assert(
-		std::is_same_v<T, float> || std::is_same_v<T, double> || std::is_same_v<T, int> || std::is_same_v<T, uint> || std::is_same_v<T, size_t> || std::is_same_v<T, bool>,
-		"T must be float, double, int or uint");
+		std::is_same_v<T, float> || std::is_same_v<T, double> ||
+			std::is_same_v<T, int> || std::is_same_v<T, uint> ||
+			std::is_same_v<T, size_t> || std::is_same_v<T, bool>,
+		"T must be float, double, int or uint"
+	);
 
-	use();
-	checkGeneralErrorGL(m_debug_name);
-	GLint location = getLocation(name);
+	bind();
+	// checkGeneralErrorGL(m_debug_name);
+	GLint location = getLocation(hash_name);
 	uniformVecArrayFunc<N, T>(location, array, count);
-	checkGeneralErrorGL(m_debug_name);
+	// checkGeneralErrorGL(m_debug_name);
 }
 
 template <typename T>
-inline void ShaderProgram::set(const std::string& name, T val)
+inline void ShaderProgram::set(uint32 hash_name, T val)
 {
 	static_assert(
-		std::is_same_v<T, float> || std::is_same_v<T, double> || std::is_same_v<T, int> || std::is_same_v<T, uint> || std::is_same_v<T, size_t> || std::is_same_v<T, bool>,
-		"T must be float, double, int uint or size_t");
+		std::is_same_v<T, float> || std::is_same_v<T, double> ||
+			std::is_same_v<T, int> || std::is_same_v<T, uint> ||
+			std::is_same_v<T, size_t> || std::is_same_v<T, bool>,
+		"T must be float, double, int uint or size_t"
+	);
 
-	use();
-	checkGeneralErrorGL(m_debug_name);
-	GLint location = getLocation(name);
+	bind();
+	// checkGeneralErrorGL(m_debug_name);
+	GLint location = getLocation(hash_name);
 	uniformValueFunc<T>(location, val);
-	checkGeneralErrorGL(m_debug_name);
+	// checkGeneralErrorGL(m_debug_name);
 }
 
 template <typename T>
-inline void ShaderProgram::setArray(const std::string& name, const T* const vals, GLsizei count)
+inline void
+ShaderProgram::setArray(uint32 hash_name, const T* const vals, GLsizei count)
 {
 	static_assert(
-		std::is_same_v<T, float> || std::is_same_v<T, double> || std::is_same_v<T, int> || std::is_same_v<T, uint> || std::is_same_v<T, size_t> || std::is_same_v<T, bool>,
-		"T must be float, double, int or uint");
+		std::is_same_v<T, float> || std::is_same_v<T, double> ||
+			std::is_same_v<T, int> || std::is_same_v<T, uint> ||
+			std::is_same_v<T, size_t> || std::is_same_v<T, bool>,
+		"T must be float, double, int or uint"
+	);
 
-	use();
-	checkGeneralErrorGL(m_debug_name);
-	GLint location = getLocation();
+	bind();
+	// checkGeneralErrorGL(m_debug_name);
+	GLint location = getLocation(hash_name);
 	uniformValueArrayFunc<T>(location, vals, count);
-	checkGeneralErrorGL(m_debug_name);
+	// checkGeneralErrorGL(m_debug_name);
 }
 
 template <size_t N, typename T>
-inline void ShaderProgram::setMat(const std::string& name, const xm::matrix<N, T>& mat)
+inline void ShaderProgram::setMat(uint32 hash_name, const xm::matrix<N, T>& mat)
 {
 	static_assert(N <= 4 && N >= 2, "N must be between 2 and 4");
 
 	static_assert(
 		std::is_same_v<T, float> || std::is_same_v<T, double>,
-		"T must be float, double");
+		"T must be float, double"
+	);
 
-	use();
-	checkGeneralErrorGL(m_debug_name);
-	GLint location = getLocation(name);
+	bind();
+	// checkGeneralErrorGL(m_debug_name);
+	GLint location = getLocation(hash_name);
 	uniformMatArrayFunc<N, T>(location, &mat, 1);
-	checkGeneralErrorGL(m_debug_name);
+	// checkGeneralErrorGL(m_debug_name);
 }
 
 template <size_t N, typename T>
-inline void ShaderProgram::setMatArray(const std::string& name, const xm::matrix<N, T>* const array, GLsizei count)
+inline void ShaderProgram::setMatArray(
+	uint32 hash_name,
+	const xm::matrix<N, T>* const array,
+	GLsizei count
+)
 {
 	static_assert(N <= 4 && N >= 2, "N must be between 2 and 4");
 
 	static_assert(
 		std::is_same_v<T, float> || std::is_same_v<T, double>,
-		"T must be float, double, int or uint");
+		"T must be float, double, int or uint"
+	);
 
-	use();
-	checkGeneralErrorGL(m_debug_name);
+	bind();
 
-	GLint location = getLocation(name);
-	checkGeneralErrorGL(m_debug_name);
+	GLint location = getLocation(hash_name);
+	// checkGeneralErrorGL(m_debug_name);
 	uniformMatArrayFunc<N, T>(location, array, count);
-	checkGeneralErrorGL(m_debug_name);
+	// checkGeneralErrorGL(m_debug_name);
 }

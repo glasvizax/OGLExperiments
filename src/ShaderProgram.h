@@ -3,65 +3,94 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
 #include <type_traits>
+#include <unordered_map>
 
 #include <glad/glad.h>
 #include <xm/xm.h>
+
+#include "Aliases.h"
+#include "GLHandle.h"
+
+class ShaderProgramTrait
+{
+	static void destroy(GLuint id)
+	{
+		glDeleteProgram(id);
+	}
+
+	static void bind(GLuint id)
+	{
+		glUseProgram(id);
+	}
+};
+
+using ShaderProgramHandle = GLHandle<ShaderProgramTrait>;
+
+// FNV-1a
+constexpr uint32 hashString(const char* str, size_t len)
+{
+	uint32 hash = 2166136261u;
+	for (size_t i = 0; i < len; ++i)
+	{
+		hash ^= static_cast<uint32>(*str++);
+		hash *= 16777619u;
+	}
+	return hash;
+}
+
+constexpr uint32_t operator"" _id(const char* str, size_t len)
+{
+	return hashString(str, len);
+}
 
 class ShaderProgram
 {
 
 public:
-	ShaderProgram();
-
-#ifdef _DEBUG
-	std::string m_debug_name;
-	ShaderProgram(const std::string& debug_name);
-#endif
-
-	ShaderProgram(const ShaderProgram&) = delete;
-	ShaderProgram& operator=(const ShaderProgram&) = delete;
-
-	ShaderProgram(ShaderProgram&& other) noexcept;
-	ShaderProgram& operator=(ShaderProgram&& other) noexcept;
-
-	~ShaderProgram();
+	ShaderProgram() noexcept = default;
 
 	bool init(const char* const vertex_src, const char* const fragment_src);
-	bool init(const char* const vertex_src, const char* const fragment_src, const char* const geometry_src);
+	bool init(
+		const char* const vertex_src,
+		const char* const fragment_src,
+		const char* const geometry_src
+	);
 
-	void use() const;
+	void bind() const;
 
 	template <size_t N, typename T>
-	void setVec(const std::string& name, xm::vector<N, T> vec);
+	void setVec(uint32 hash_name, xm::vector<N, T> vec);
 
 	template <size_t N, typename T>
-	void setVecArray(const std::string& name, const xm::vector<N, T>* const array, GLsizei count);
+	void setVecArray(
+		uint32 hash_name,
+		const xm::vector<N, T>* const array,
+		GLsizei count
+	);
 
 	template <typename T>
-	void set(const std::string& name, T val);
+	void set(uint32 hash_name, T val);
 
 	template <typename T>
-	void setArray(const std::string& name, const T* const vals, GLsizei count);
+	void setArray(uint32 hash_name, const T* const vals, GLsizei count);
 
 	template <size_t N, typename T>
-	void setMat(const std::string& name, const xm::matrix<N, T>& mat);
+	void setMat(uint32 hash_name, const xm::matrix<N, T>& mat);
 
 	template <size_t N, typename T>
-	void setMatArray(const std::string& name, const xm::matrix<N, T>* const array, GLsizei count);
-
-	GLuint getID() const { return m_program_id; }
+	void setMatArray(
+		uint32 hash_name,
+		const xm::matrix<N, T>* const array,
+		GLsizei count
+	);
 
 private:
-	GLint getLocation(const std::string& name);
+	GLint getLocation(uint32 hash_name);
+	void reflectUniforms();
 
-	void clear();
-
-	GLuint m_program_id = 0;
-	std::unordered_map<size_t, GLint> m_locations;
-
-	inline static GLuint s_active_program = 0;
+	ShaderProgramHandle m_program;
+	std::vector<std::pair<uint32, GLint>> m_locations;
 };
 
 #include "ShaderSetFuncImpl.h"

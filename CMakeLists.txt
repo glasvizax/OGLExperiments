@@ -47,7 +47,21 @@ file(
     CONFIGURE_DEPENDS 
         ${OGLE_SRC_DIR}/*.h 
         ${OGLE_SRC_DIR}/*.cpp
-)   
+)
+
+file(
+    GLOB
+    EXTRA_FILES 
+    CONFIGURE_DEPENDS 
+    LIST_DIRECTORIES false
+        ${CMAKE_CURRENT_SOURCE_DIR}/*
+)
+
+set_source_files_properties(
+    ${EXTRA_FILES} 
+    PROPERTIES 
+        HEADER_FILE_ONLY TRUE
+)
 
 add_library(
     glad 
@@ -58,6 +72,7 @@ add_library(
 add_executable(
     Main 
     ${SRC_FILES}
+    ${EXTRA_FILES}
 )
 
 cmake_path(SET FETCHCONTENT_BASE_DIR ${OGLE_LIBS_DIR})
