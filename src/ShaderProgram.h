@@ -12,7 +12,7 @@
 #include "Aliases.h"
 #include "GLHandle.h"
 
-class ShaderProgramTrait
+struct ShaderProgramTrait
 {
 	static void destroy(GLuint id)
 	{

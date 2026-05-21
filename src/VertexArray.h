@@ -64,6 +64,9 @@ public:
 		GLenum draw_mode = GL_STATIC_DRAW
 	);
 
+	template <typename VertexType>
+	void autoEnableAttributes();
+
 	void bind();
 
 	void enableAttribute(

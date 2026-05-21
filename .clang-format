@@ -18,3 +18,4 @@ BreakConstructorInitializers: BeforeComma
 ConstructorInitializerIndentWidth: 4
 IndentCaseLabels: true
 AlwaysBreakTemplateDeclarations: Yes
+PenaltyBreakAssignment: 1000

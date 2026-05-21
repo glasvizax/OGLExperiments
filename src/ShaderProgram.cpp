@@ -161,8 +161,9 @@ bool setupProgram(GLuint* shaders, uint count, GLuint& program)
 	glGetProgramiv(program, GL_LINK_STATUS, &is_linked);
 	if (is_linked == GL_FALSE)
 	{
-		char log[512];
-		glGetProgramInfoLog(program, 512, nullptr, log);
+		const GLsizei buf_size = 512;
+		char log[buf_size];
+		glGetProgramInfoLog(program, buf_size, nullptr, log);
 		// LOG_ERROR_F("couldn't link program [%s]", log.c_str());
 
 		glDeleteProgram(program);
@@ -192,11 +193,11 @@ void ShaderProgram::reflectUniforms()
 	GLint size;
 	GLenum type;
 
-	for (GLint i = 0; i < count; i++)
+	for (GLuint i = 0; i < count; i++)
 	{
 		glGetActiveUniform(
 			m_program.get(),
-			(GLuint)i,
+			i,
 			buf_size,
 			&length,
 			&size,

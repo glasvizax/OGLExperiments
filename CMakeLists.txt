@@ -19,13 +19,55 @@ set_policy(CMP0168 NEW)
 set_policy(CMP0135 NEW)
 set_policy(CMP0091 NEW)
 
-cmake_path(APPEND CMAKE_CURRENT_SOURCE_DIR "bin" OUTPUT_VARIABLE OGLE_BIN_DIR)
-cmake_path(APPEND CMAKE_CURRENT_SOURCE_DIR "libs" OUTPUT_VARIABLE OGLE_LIBS_DIR)
-cmake_path(APPEND CMAKE_CURRENT_SOURCE_DIR "src" OUTPUT_VARIABLE OGLE_SRC_DIR)
+cmake_path(
+    APPEND CMAKE_CURRENT_SOURCE_DIR 
+    "bin" 
+    OUTPUT_VARIABLE OGLE_BIN_DIR
+)
+
+cmake_path(
+    APPEND CMAKE_CURRENT_SOURCE_DIR 
+    "libs" 
+    OUTPUT_VARIABLE OGLE_LIBS_DIR
+)
+
+cmake_path(
+    APPEND OGLE_LIBS_DIR 
+    "glad" 
+    OUTPUT_VARIABLE OGLE_GLAD_DIR
+)
+
+cmake_path(
+    APPEND CMAKE_CURRENT_SOURCE_DIR 
+    "src" 
+    OUTPUT_VARIABLE OGLE_SRC_DIR
+)
+
+cmake_path(
+    APPEND CMAKE_CURRENT_SOURCE_DIR 
+    "shaders" 
+    OUTPUT_VARIABLE OGLE_SHADERS_DIR
+)
+
+cmake_path(
+    APPEND CMAKE_CURRENT_SOURCE_DIR 
+    "content" 
+    OUTPUT_VARIABLE OGLE_CONTENT_DIR
+)
 
 cmake_path(SET CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OGLE_BIN_DIR})
-cmake_path(APPEND CMAKE_RUNTIME_OUTPUT_DIRECTORY "Debug" OUTPUT_VARIABLE CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG)
-cmake_path(APPEND CMAKE_RUNTIME_OUTPUT_DIRECTORY "Release" OUTPUT_VARIABLE CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE)
+
+cmake_path(
+    APPEND CMAKE_RUNTIME_OUTPUT_DIRECTORY 
+    "Debug" 
+    OUTPUT_VARIABLE CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG
+)
+
+cmake_path(
+    APPEND CMAKE_RUNTIME_OUTPUT_DIRECTORY 
+    "Release"
+    OUTPUT_VARIABLE CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE
+)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -38,7 +80,7 @@ project(
 
 file(
     GLOB_RECURSE OGLE_GLAD_FILES 
-    ${OGLE_LIBS_DIR}/glad/*    
+    ${OGLE_GLAD_DIR}/*    
 )
 
 file(
@@ -57,8 +99,19 @@ file(
         ${CMAKE_CURRENT_SOURCE_DIR}/*
 )
 
+file(
+    GLOB_RECURSE 
+    SHADER_FILES 
+    CONFIGURE_DEPENDS 
+        ${OGLE_SHADERS_DIR}/*.vert
+        ${OGLE_SHADERS_DIR}/*.frag
+        ${OGLE_SHADERS_DIR}/*.geom
+        ${OGLE_SHADERS_DIR}/*.comp
+)
+
 set_source_files_properties(
     ${EXTRA_FILES} 
+    ${SHADER_FILES}
     PROPERTIES 
         HEADER_FILE_ONLY TRUE
 )
@@ -69,11 +122,21 @@ add_library(
     ${OGLE_GLAD_FILES}
 )
 
+target_include_directories(
+    glad
+    PUBLIC
+        ${OGLE_GLAD_DIR}/include
+)
+
+
 add_executable(
     Main 
     ${SRC_FILES}
     ${EXTRA_FILES}
+    ${SHADER_FILES}
 )
+
+source_group(Shaders FILES ${SHADER_FILES})
 
 cmake_path(SET FETCHCONTENT_BASE_DIR ${OGLE_LIBS_DIR})
 
@@ -136,15 +199,11 @@ target_link_libraries(
         glad
 )
 
-target_include_directories(
-    Main
-    PRIVATE
-        ${OGLE_LIBS_DIR}/glad/include
-)
-
 target_compile_definitions(
     Main
     PRIVATE
         GLFW_INCLUDE_NONE
+        OGLE_CONTENT_DIR="${OGLE_CONTENT_DIR}"
+        OGLE_SHADERS_DIR="${OGLE_SHADERS_DIR}"
 )
 
