@@ -6,7 +6,7 @@ constexpr float DEFAULT_CAMERA_PITCH = 0.0f;
 constexpr float DEFAULT_CAMERA_YAW = 180.0f;
 constexpr float DEFAULT_CAMERA_ROLL = 0.0f;
 
-constexpr float DEFAULT_ASPECT_RATIO_CONSOLE = 16.0f / 9.0f;
+constexpr float DEFAULT_ASPECT_RATIO = 16.0f / 9.0f;
 
 class Camera
 {
@@ -101,6 +101,7 @@ public:
 
 	void update(float dt);
 
+private:
 	glm::vec3 m_position{ 0.0f };
 	glm::vec3 m_direction{ 0.0f, 0.0f, -1.0f };
 	glm::vec3 m_world_up{ 0.0f, 1.0f, 0.0f };
@@ -112,7 +113,7 @@ public:
 	float m_near_plane = 1.0f;
 	float m_far_plane = 100.0f;
 	float m_fov_deg = 60.0f;
-	float m_aspect_ratio = DEFAULT_ASPECT_RATIO_CONSOLE;
+	float m_aspect_ratio = DEFAULT_ASPECT_RATIO;
 
 	float m_move_speed = 5.0f;
 	float m_rotation_speed_yaw = 100.0f;

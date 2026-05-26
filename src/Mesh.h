@@ -39,31 +39,7 @@ inline void VertexArray::autoEnableAttributes<Vertex>()
 
 	_AUTO_ENABLE(0, Vertex, position);
 	_AUTO_ENABLE(1, Vertex, normal);
-	_AUTO_ENABLE(1, Vertex, uv);
-
-	/*
-	enableAttribute(
-		0,
-		decltype(Vertex::position)::length(),
-		stride,
-		offsetof(Vertex, position) / sizeof(float)
-	);
-
-	enableAttribute(
-		1,
-		decltype(Vertex::normal)::length(),
-		stride,
-		offsetof(Vertex, normal) / sizeof(float)
-	);
-
-	enableAttribute(
-		2,
-		decltype(Vertex::uv)::length(),
-		stride,
-		offsetof(Vertex, uv) / sizeof(float)
-	);
-
-	*/
+	_AUTO_ENABLE(2, Vertex, uv);
 }
 
 template <>
@@ -75,44 +51,8 @@ inline void VertexArray::autoEnableAttributes<VertexTB>()
 	_AUTO_ENABLE(1, VertexTB, normal);
 	_AUTO_ENABLE(2, VertexTB, uv);
 	_AUTO_ENABLE(3, VertexTB, tangent);
-	_AUTO_ENABLE(3, VertexTB, bitangent);
+	_AUTO_ENABLE(4, VertexTB, bitangent);
 
-	/*
-	enableAttribute(
-		0,
-		vector_dim_v<decltype(VertexTB::position)>,
-		stride,
-		offsetof(VertexTB, position) / sizeof(float)
-	);
-
-	enableAttribute(
-		1,
-		vector_dim_v<decltype(VertexTB::normal)>,
-		stride,
-		offsetof(VertexTB, normal) / sizeof(float)
-	);
-
-	enableAttribute(
-		2,
-		vector_dim_v<decltype(VertexTB::uv)>,
-		stride,
-		offsetof(VertexTB, uv) / sizeof(float)
-	);
-
-	enableAttribute(
-		3,
-		vector_dim_v<decltype(VertexTB::tangent)>,
-		stride,
-		offsetof(VertexTB, tangent) / sizeof(float)
-	);
-
-	enableAttribute(
-		4,
-		vector_dim_v<decltype(VertexTB::bitangent)>,
-		stride,
-		offsetof(VertexTB, bitangent) / sizeof(float)
-	);
-	*/
 }
 
 struct Mesh
