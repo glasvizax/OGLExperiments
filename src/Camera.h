@@ -12,6 +12,11 @@ class Camera
 {
 public:
 
+	glm::vec3 getPosition() const 
+	{
+		return m_position;
+	}
+
 	float getNearPlane() const
 	{
 		return m_near_plane;
@@ -115,9 +120,9 @@ private:
 	float m_fov_deg = 60.0f;
 	float m_aspect_ratio = DEFAULT_ASPECT_RATIO;
 
-	float m_move_speed = 5.0f;
-	float m_rotation_speed_yaw = 100.0f;
-	float m_rotation_speed_pitch = 100.0f;
+	float m_move_speed = 10.0f;
+	float m_rotation_speed_yaw = 200.0f;
+	float m_rotation_speed_pitch = 200.0f;
 
 	glm::vec3 m_rotation{
 		DEFAULT_CAMERA_PITCH,

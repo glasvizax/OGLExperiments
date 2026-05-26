@@ -8,7 +8,16 @@ uniform mat4 proj;
 uniform mat4 view;
 uniform mat4 model;
 
+out vec3 frag_norm;
+out vec2 frag_uv;
+out vec3 frag_world_pos;
+
 void main()
 {
-	gl_Position = proj * view * model * vec4(pos, 1.0);
+	vec4 world = model * vec4(pos, 1.0);
+	gl_Position = proj * view * world;
+
+	frag_norm = norm;
+	frag_uv = uv;
+	frag_world_pos = vec3(world);
 }

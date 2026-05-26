@@ -182,6 +182,7 @@ public:
 			init_program.setMat("proj"_id, proj);
 			init_program.setMat("view"_id, view);
 			init_program.setMat("model"_id, cube_model);
+			init_program.setVec("camera_pos"_id, m_camera.getPosition());
 
 			cube_mesh.draw();
 
