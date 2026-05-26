@@ -2,12 +2,12 @@
 
 #include <glad/glad.h>
 
-#include <xm/xm.h>
+#include <glm/glm.hpp>
 
 template <size_t N, typename T>
 inline void uniformVecArrayFunc(
 	GLint location,
-	const xm::vector<N, T>* const data,
+	const glm::vec<N, T>* const data,
 	GLsizei count
 )
 {
@@ -130,7 +130,7 @@ inline void uniformVecArrayFunc(
 }
 
 template <size_t N, typename T>
-inline void uniformVecFunc(GLint location, xm::vector<N, T> vec)
+inline void uniformVecFunc(GLint location, glm::vec<N, T> vec)
 {
 	if constexpr (N == 2)
 	{
@@ -202,7 +202,8 @@ inline void uniformVecFunc(GLint location, xm::vector<N, T> vec)
 	}
 }
 
-template <typename T> inline void uniformValueFunc(GLint location, T val)
+template <typename T>
+inline void uniformValueFunc(GLint location, T val)
 {
 	if constexpr (std::is_same_v<T, float>)
 	{
@@ -226,7 +227,8 @@ template <typename T> inline void uniformValueFunc(GLint location, T val)
 }
 
 template <typename T>
-inline void uniformValueArrayFunc(GLint location, const T* const vals, GLsizei count)
+inline void
+uniformValueArrayFunc(GLint location, const T* const vals, GLsizei count)
 {
 	if constexpr (std::is_same_v<T, float>)
 	{
@@ -252,7 +254,7 @@ inline void uniformValueArrayFunc(GLint location, const T* const vals, GLsizei c
 template <size_t N, typename T>
 inline void uniformMatArrayFunc(
 	GLint location,
-	const xm::matrix<N, T>* const mat,
+	const glm::mat<N, N, T>* const mat,
 	GLsizei count
 )
 {

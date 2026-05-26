@@ -4,65 +4,66 @@
 #include <span>
 #include <type_traits>
 
-#include <xm/xm.h>
+#include <glm/glm.hpp>
 
 #include "Aliases.h"
 #include "VertexArray.h"
 
 struct Vertex
 {
-	xm::vec3 position;
-	xm::vec3 normal;
-	xm::vec2 uv;
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 uv;
 };
 
 struct VertexTB
 {
-	xm::vec3 position;
-	xm::vec3 normal;
-	xm::vec2 uv;
-	xm::vec3 tangent;
-	xm::vec3 bitangent;
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 uv;
+	glm::vec3 tangent;
+	glm::vec3 bitangent;
 };
 
-template <typename T>
-struct vector_dim : std::integral_constant<uint8, 0>
-{
-};
-
-template <uint8 N, typename T>
-struct vector_dim<xm::vector<N, T>> : std::integral_constant<uint8, N>
-{
-};
-
-template <typename T>
-constexpr uint8 vector_dim_v = vector_dim<T>::value;
+#define _AUTO_ENABLE(pos, vtype, vfield) enableAttribute( \
+		pos, \
+		decltype(vtype::vfield)::length(), \
+		stride, \
+		offsetof(vtype, vfield) / sizeof(float) \
+	)
 
 template <>
 inline void VertexArray::autoEnableAttributes<Vertex>()
 {
 	constexpr GLuint stride = sizeof(Vertex) / sizeof(float);
 
+	_AUTO_ENABLE(0, Vertex, position);
+	_AUTO_ENABLE(1, Vertex, normal);
+	_AUTO_ENABLE(1, Vertex, uv);
+
+	/*
 	enableAttribute(
 		0,
-		vector_dim_v<decltype(Vertex::position)>,
+		decltype(Vertex::position)::length(),
 		stride,
 		offsetof(Vertex, position) / sizeof(float)
 	);
 
 	enableAttribute(
 		1,
-		vector_dim_v<decltype(Vertex::normal)>,
+		decltype(Vertex::normal)::length(),
 		stride,
 		offsetof(Vertex, normal) / sizeof(float)
 	);
 
 	enableAttribute(
 		2,
-		vector_dim_v<decltype(Vertex::uv)>,
+		decltype(Vertex::uv)::length(),
 		stride,
 		offsetof(Vertex, uv) / sizeof(float)
 	);
+
+	*/
 }
 
 template <>
@@ -70,6 +71,13 @@ inline void VertexArray::autoEnableAttributes<VertexTB>()
 {
 	constexpr GLuint stride = sizeof(VertexTB) / sizeof(float);
 
+	_AUTO_ENABLE(0, VertexTB, position);
+	_AUTO_ENABLE(1, VertexTB, normal);
+	_AUTO_ENABLE(2, VertexTB, uv);
+	_AUTO_ENABLE(3, VertexTB, tangent);
+	_AUTO_ENABLE(3, VertexTB, bitangent);
+
+	/*
 	enableAttribute(
 		0,
 		vector_dim_v<decltype(VertexTB::position)>,
@@ -104,6 +112,7 @@ inline void VertexArray::autoEnableAttributes<VertexTB>()
 		stride,
 		offsetof(VertexTB, bitangent) / sizeof(float)
 	);
+	*/
 }
 
 struct Mesh
@@ -114,7 +123,7 @@ public:
 	Mesh(std::span<VertexType> vertices);
 
 	template <typename VertexType>
-	Mesh(std::span<VertexType> vertices, std::span<xm::uvec3> indices);
+	Mesh(std::span<VertexType> vertices, std::span<glm::uvec3> indices);
 
 	template <typename VertexType>
 	Mesh(std::span<VertexType> vertices, std::span<uint> indices);
@@ -176,7 +185,7 @@ inline Mesh::Mesh(std::span<VertexType> vertices, std::span<uint> indices)
 }
 
 template <typename VertexType>
-inline Mesh::Mesh(std::span<VertexType> vertices, std::span<xm::uvec3> indices)
+inline Mesh::Mesh(std::span<VertexType> vertices, std::span<glm::uvec3> indices)
 	: Mesh(
 		  vertices,
 		  std::span<uint>(

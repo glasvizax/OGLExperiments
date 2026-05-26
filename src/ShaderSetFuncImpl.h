@@ -1,5 +1,5 @@
 #pragma once
-#include "xm/xm.h"
+#include "glm/glm.hpp"
 
 #include "ShaderProgram.h"
 
@@ -9,7 +9,7 @@ namespace
 } // namespace
 
 template <size_t N, typename T>
-inline void ShaderProgram::setVec(uint32 hash_name, xm::vector<N, T> vec)
+inline void ShaderProgram::setVec(uint32 hash_name, glm::vec<N, T> vec)
 {
 	static_assert(N <= 4 && N >= 2, "N must be between 2 and 4");
 	static_assert(
@@ -30,7 +30,7 @@ inline void ShaderProgram::setVec(uint32 hash_name, xm::vector<N, T> vec)
 template <size_t N, typename T>
 inline void ShaderProgram::setVecArray(
 	uint32 hash_name,
-	const xm::vector<N, T>* const array,
+	const glm::vec<N, T>* const array,
 	GLsizei count
 )
 {
@@ -85,7 +85,8 @@ ShaderProgram::setArray(uint32 hash_name, const T* const vals, GLsizei count)
 }
 
 template <size_t N, typename T>
-inline void ShaderProgram::setMat(uint32 hash_name, const xm::matrix<N, T>& mat)
+inline void
+ShaderProgram::setMat(uint32 hash_name, const glm::mat<N, N, T>& mat)
 {
 	static_assert(N <= 4 && N >= 2, "N must be between 2 and 4");
 
@@ -104,7 +105,7 @@ inline void ShaderProgram::setMat(uint32 hash_name, const xm::matrix<N, T>& mat)
 template <size_t N, typename T>
 inline void ShaderProgram::setMatArray(
 	uint32 hash_name,
-	const xm::matrix<N, T>* const array,
+	const glm::mat<N, N, T>* const array,
 	GLsizei count
 )
 {

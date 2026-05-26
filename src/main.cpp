@@ -1,6 +1,9 @@
 #include <iostream>
 #include <vector>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
@@ -49,7 +52,7 @@ Vertex g_cube_vertices[] = {
 	{{1.0f, 1.0f, -1.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
 };
 
-xm::uvec3 g_cube_indices[] = {
+glm::uvec3 g_cube_indices[] = {
 	{0, 1, 2},
 	{0, 2, 3},
 	{4, 5, 6},
@@ -123,11 +126,11 @@ int main()
 
 	Mesh cube_mesh = Mesh(
 		std::span<Vertex>(g_cube_vertices),
-		std::span<xm::uvec3>(g_cube_indices)
+		std::span<glm::uvec3>(g_cube_indices)
 	);
 
-	xm::mat4 cube_model(1.0f);
-	xm::translate(cube_model, xm::vec3(0.0f, 0.0f, -7.0f));
+	glm::mat4 cube_model(1.0f);
+	glm::translate(cube_model, glm::vec3(0.0f, 0.0f, -7.0f));
 
 	ShaderProgram init_program = initLoadShaderProgram(
 		"init.vert",
@@ -150,12 +153,12 @@ int main()
 
 		g_engine.m_camera.update(delta);
 
-		xm::mat4 proj = g_engine.m_camera.getPerspectiveMatrix();
-		xm::mat4 view = g_engine.m_camera.getViewMatrix();
+		glm::mat4 proj = g_engine.m_camera.getPerspectiveMatrix();
+		glm::mat4 view = g_engine.m_camera.getViewMatrix();
 
-		init_program.setMat("proj"_id, xm::transpose(proj));
-		init_program.setMat("view"_id, xm::transpose(view));
-		init_program.setMat("model"_id, xm::transpose(cube_model));
+		init_program.setMat("proj"_id, proj);
+		init_program.setMat("view"_id, view);
+		init_program.setMat("model"_id, cube_model);
 
 		cube_mesh.draw();
 

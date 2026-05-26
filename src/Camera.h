@@ -1,6 +1,6 @@
 #pragma once
 
-#include <xm/xm.h>
+#include <glm/glm.hpp>
 
 constexpr float DEFAULT_CAMERA_PITCH = 0.0f;
 constexpr float DEFAULT_CAMERA_YAW = 180.0f;
@@ -56,8 +56,8 @@ public:
 		m_perspective_dirty = true;
 	}
 
-	xm::mat4 getPerspectiveMatrix();
-	xm::mat4 getViewMatrix();
+	glm::mat4 getPerspectiveMatrix();
+	glm::mat4 getViewMatrix();
 
 	void moveLeft()
 	{	
@@ -101,13 +101,13 @@ public:
 
 	void update(float dt);
 
-	xm::vec3 m_position{ 0.0f };
-	xm::vec3 m_direction{ 0.0f, 0.0f, -1.0f };
-	xm::vec3 m_world_up{ 0.0f, 1.0f, 0.0f };
-	xm::vec3 m_right{ 1.0f, 0.0f, 0.0f };
+	glm::vec3 m_position{ 0.0f };
+	glm::vec3 m_direction{ 0.0f, 0.0f, -1.0f };
+	glm::vec3 m_world_up{ 0.0f, 1.0f, 0.0f };
+	glm::vec3 m_right{ 1.0f, 0.0f, 0.0f };
 
-	xm::mat4 m_perspective;
-	xm::mat4 m_view;
+	glm::mat4 m_perspective;
+	glm::mat4 m_view;
 
 	float m_near_plane = 1.0f;
 	float m_far_plane = 100.0f;
@@ -118,17 +118,17 @@ public:
 	float m_rotation_speed_yaw = 100.0f;
 	float m_rotation_speed_pitch = 100.0f;
 
-	xm::vec3 m_rotation{
+	glm::vec3 m_rotation{
 		DEFAULT_CAMERA_PITCH,
 		DEFAULT_CAMERA_YAW,
 		DEFAULT_CAMERA_ROLL
 	};
 
-	int m_along_moment = 0;
-	int m_across_moment = 0;
+	float m_along_moment = 0.0f;
+	float m_across_moment = 0.0f;
 
-	int m_pitch_moment = 0;
-	int m_yaw_moment = 0;
+	float m_pitch_moment = 0.0f;
+	float m_yaw_moment = 0.0f;
 
 	bool m_perspective_dirty = true;
 	bool m_view_dirty = true;

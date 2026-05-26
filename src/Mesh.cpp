@@ -19,5 +19,5 @@ void Mesh::draw()
 /*
 Mesh g_cube_mesh = Mesh(
 	std::span<Vertex>(g_cube_vertices),
-	std::span<xm::uvec3>(g_cube_indices)
+	std::span<glm::uvec3>(g_cube_indices)
 );*/

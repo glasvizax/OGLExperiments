@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 #include <glad/glad.h>
-#include <xm/xm.h>
+#include <glm/glm.hpp>
 
 #include "Aliases.h"
 #include "GLHandle.h"
@@ -60,12 +60,12 @@ public:
 	void bind() const;
 
 	template <size_t N, typename T>
-	void setVec(uint32 hash_name, xm::vector<N, T> vec);
+	void setVec(uint32 hash_name, glm::vec<N, T> vec);
 
 	template <size_t N, typename T>
 	void setVecArray(
 		uint32 hash_name,
-		const xm::vector<N, T>* const array,
+		const glm::vec<N, T>* const array,
 		GLsizei count
 	);
 
@@ -76,12 +76,12 @@ public:
 	void setArray(uint32 hash_name, const T* const vals, GLsizei count);
 
 	template <size_t N, typename T>
-	void setMat(uint32 hash_name, const xm::matrix<N, T>& mat);
+	void setMat(uint32 hash_name, const glm::mat<N, N, T>& mat);
 
 	template <size_t N, typename T>
 	void setMatArray(
 		uint32 hash_name,
-		const xm::matrix<N, T>* const array,
+		const glm::mat<N, N, T>* const array,
 		GLsizei count
 	);
 
