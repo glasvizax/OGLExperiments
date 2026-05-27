@@ -162,31 +162,43 @@ public:
 	int mainLoop()
 	{
 		auto last_time = chrono::steady_clock::now();
+		float time_integral = 0.0f;
+
 		glViewport(0, 0, 1200, 800);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-		float time_integral = 0.0f;
+		glEnable(GL_DEPTH_TEST);
 
 		Mesh cube_mesh = Mesh(
 			std::span<Vertex>(g_cube_vertices),
 			std::span<glm::uvec3>(g_cube_indices)
 		);
 
-		glm::mat4 cube_model(1.0f);
-		cube_model = glm::translate(cube_model, glm::vec3(0.0f, 0.0f, -7.0f));
-
-		ShaderProgram init_program = m_resource_manager.initLoadShaderProgram(
-			"init.vert",
-			"init.frag"
+		ShaderProgram light_sp = m_resource_manager.initLoadShaderProgram(
+			"light.vert",
+			"light.frag"
 		);
-		
-		Texture* af_tex = m_resource_manager.initLoadTexture("awesomeface.png");
 
-		init_program.bind();
-		af_tex->bind(0);
-		init_program.set("tex"_id, 0);
+		ShaderProgram object_sp = m_resource_manager.initLoadShaderProgram(
+			"object.vert",
+			"object.frag"
+		);
 
-		glEnable(GL_DEPTH_TEST);
+		// Texture* af_tex =
+		// m_resource_manager.initLoadTexture("awesomeface.png");
+
+		glm::vec3 light_pos(-7.0f, -2.0f, 4.0f);
+		glm::vec3 light_scale(0.3f);
+		glm::mat4 light_model(1.0f);
+
+		light_model = glm::scale(light_model, light_scale);
+		light_model = glm::translate(light_model, light_pos);
+
+		glm::vec3 light_color(1.0f);
+
+		glm::vec3 object_pos(0.0f, 0.0f, -7.0f);
+		glm::mat4 object_model(1.0f);
+		object_model = glm::translate(object_model, object_pos);
+		glm::vec3 object_color(0.75f, 0.2f, 0.2f);
 
 		while (!glfwWindowShouldClose(m_window))
 		{
@@ -195,7 +207,6 @@ public:
 			auto time = chrono::steady_clock::now();
 			float delta = chrono::duration<float>(time - last_time).count();
 			last_time = time;
-
 			time_integral += delta;
 
 			m_camera.update(delta);
@@ -203,11 +214,25 @@ public:
 			glm::mat4 proj = m_camera.getPerspectiveMatrix();
 			glm::mat4 view = m_camera.getViewMatrix();
 
-			init_program.setMat("proj"_id, proj);
-			init_program.setMat("view"_id, view);
-			init_program.setMat("model"_id, cube_model);
-			init_program.setVec("camera_pos"_id, m_camera.getPosition());
+			glm::mat3 object_normal = glm::mat3(
+				glm::inverse(glm::transpose(view * object_model))
+			);
 
+			glm::vec3 light_cam_pos = glm::mat3(view) * light_pos;
+
+			object_sp.setMat("proj"_id, proj);
+			object_sp.setMat("view"_id, view);
+			object_sp.setMat("model"_id, object_model);
+			object_sp.setMat("normal"_id, object_normal);
+			object_sp.setVec("light_cam_pos"_id, light_cam_pos);
+			object_sp.setVec("object_color"_id, object_color);
+			object_sp.setVec("light_color"_id, light_color);
+			cube_mesh.draw();
+
+			light_sp.setMat("proj"_id, proj);
+			light_sp.setMat("view"_id, view);
+			light_sp.setMat("model"_id, light_model);
+			light_sp.setVec("light_color"_id, light_color);
 			cube_mesh.draw();
 
 			glfwSwapBuffers(m_window);

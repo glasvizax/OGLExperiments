@@ -7,7 +7,7 @@ layout (location = 2) in vec2 uv;
 uniform mat4 proj;
 uniform mat4 view;
 uniform mat4 model;
-uniform mat4 normal;
+uniform mat3 normal;
 
 out vec3 frag_norm;
 out vec2 frag_uv;
@@ -18,7 +18,7 @@ void main()
 	vec4 cam = view * model * vec4(pos, 1.0);
 	gl_Position = proj * cam;
 
-	frag_norm = normalize(vec3(normal * vec4(norm, 1.0f)));
+	frag_norm = normal * norm;
 	frag_uv = uv;
 	frag_cam_pos = vec3(cam);
 }

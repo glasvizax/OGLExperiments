@@ -4,12 +4,10 @@ out vec4 frag_color;
 
 in vec3 frag_norm;
 in vec2 frag_uv;
-in vec3 frag_world_pos;
+in vec3 frag_cam_pos;
 
 vec3 light_color = vec3(1.0f);
-vec3 light_pos = vec3(0.0f);
-
-uniform vec3 camera_pos;
+vec3 light_pos = vec3(0.0f, -1.0f, 2.0f);
 
 uniform sampler2D tex;
 
@@ -17,9 +15,10 @@ void main()
 {
 	float ambient = 0.1f;
 
-	vec3 to_light_dir = normalize(light_pos - frag_world_pos);
-	vec3 to_camera_dir = normalize(camera_pos - frag_world_pos);
-	vec3 refl = reflect(-to_light_dir,frag_norm);
+	vec3 to_light_dir = normalize(light_pos - frag_cam_pos);
+	vec3 to_camera_dir = normalize(-frag_cam_pos);
+	
+	vec3 refl = reflect(-to_light_dir, frag_norm);
 
 	float diff = max(dot(frag_norm, to_light_dir), 0.0f);
 
