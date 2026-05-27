@@ -227,8 +227,11 @@ inline void uniformValueFunc(GLint location, T val)
 }
 
 template <typename T>
-inline void
-uniformValueArrayFunc(GLint location, const T* const vals, GLsizei count)
+inline void uniformValueArrayFunc( //
+	GLint location,
+	const T* const vals,
+	GLsizei count
+)
 {
 	if constexpr (std::is_same_v<T, float>)
 	{

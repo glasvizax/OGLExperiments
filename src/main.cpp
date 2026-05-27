@@ -80,6 +80,8 @@ void glfwErrorCallback(int error_code, const char* description);
 class Engine
 {
 	GLFWwindow* m_window = nullptr;
+
+	ResourceManager m_resource_manager;
 	Camera m_camera;
 
 	friend void keyCallback(
@@ -91,7 +93,22 @@ class Engine
 	);
 
 public:
-	bool init() 
+	ResourceManager& getResourceManager()
+	{
+		return m_resource_manager;
+	}
+
+	GLFWwindow* getWindowGLFW()
+	{
+		return m_window;
+	}
+
+	Camera& getCamera()
+	{
+		return m_camera;
+	}
+
+	bool init()
 	{
 		if (glfwInit() == GLFW_FALSE)
 		{
@@ -133,13 +150,16 @@ public:
 
 		int width, height;
 		glfwGetFramebufferSize(m_window, &width, &height);
-		float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
+		float aspect_ratio = static_cast<float>(width) /
+							 static_cast<float>(height);
 
 		m_camera.setAspectRatio(aspect_ratio);
 		return true;
+
+		m_resource_manager.init();
 	}
 
-	int mainLoop() 
+	int mainLoop()
 	{
 		auto last_time = chrono::steady_clock::now();
 		glViewport(0, 0, 1200, 800);
@@ -155,12 +175,16 @@ public:
 		glm::mat4 cube_model(1.0f);
 		cube_model = glm::translate(cube_model, glm::vec3(0.0f, 0.0f, -7.0f));
 
-		ShaderProgram init_program = initLoadShaderProgram(
+		ShaderProgram init_program = m_resource_manager.initLoadShaderProgram(
 			"init.vert",
 			"init.frag"
 		);
+		
+		Texture* af_tex = m_resource_manager.initLoadTexture("awesomeface.png");
 
 		init_program.bind();
+		af_tex->bind(0);
+		init_program.set("tex"_id, 0);
 
 		glEnable(GL_DEPTH_TEST);
 
@@ -191,15 +215,14 @@ public:
 		}
 
 		return EXIT_SUCCESS;
-
 	}
 
-	void destroy() 
+	void destroy()
 	{
 		glfwTerminate();
 	}
 
-	~Engine() 
+	~Engine()
 	{
 		destroy();
 	}

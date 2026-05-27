@@ -25,11 +25,12 @@ struct VertexTB
 	glm::vec3 bitangent;
 };
 
-#define _AUTO_ENABLE(pos, vtype, vfield) enableAttribute( \
-		pos, \
-		decltype(vtype::vfield)::length(), \
-		stride, \
-		offsetof(vtype, vfield) / sizeof(float) \
+#define _AUTO_ENABLE(pos, vtype, vfield)                                       \
+	enableAttribute(                                                           \
+		pos,                                                                   \
+		decltype(vtype::vfield)::length(),                                     \
+		stride,                                                                \
+		offsetof(vtype, vfield) / sizeof(float)                                \
 	)
 
 template <>
@@ -52,7 +53,6 @@ inline void VertexArray::autoEnableAttributes<VertexTB>()
 	_AUTO_ENABLE(2, VertexTB, uv);
 	_AUTO_ENABLE(3, VertexTB, tangent);
 	_AUTO_ENABLE(4, VertexTB, bitangent);
-
 }
 
 struct Mesh
@@ -136,4 +136,4 @@ inline Mesh::Mesh(std::span<VertexType> vertices, std::span<glm::uvec3> indices)
 {
 }
 
-//extern Mesh g_cube_mesh;
+// extern Mesh g_cube_mesh;

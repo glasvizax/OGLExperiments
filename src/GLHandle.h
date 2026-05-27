@@ -4,7 +4,30 @@
 
 #include <glad/glad.h>
 
-template <typename Trait> class GLHandle
+class GLHandleCacheDefault
+{
+public:
+	static bool isBound(GLuint id)
+	{
+		return m_current_bound == id;
+	}
+
+	static void reset() 
+	{
+		m_current_bound = 0;
+	}
+
+	static void update(GLuint id) 
+	{
+		m_current_bound = id;
+	}
+
+private:
+	static inline GLuint m_current_bound = 0;
+};
+
+template <typename Trait, typename GLHandleCache = GLHandleCacheDefault>
+class GLHandle
 {
 public:
 	GLHandle() noexcept = default;
@@ -42,9 +65,9 @@ public:
 	{
 		if (m_id != 0 && m_id != new_id)
 		{
-			if (m_current_bound == m_id)
+			if (m_cache.isBound(m_id))
 			{
-				m_current_bound = 0;
+				m_cache.reset();
 			}
 			Trait::destroy(m_id);
 		}
@@ -61,18 +84,22 @@ public:
 		return m_id != 0;
 	}
 
-	template <typename... Args> bool bind(Args&&... args) const
+	template <typename... Args>
+	bool bind(Args&&... args) const
 	{
-		if (m_id == 0 && m_current_bound == m_id)
+		if (m_id == 0 && m_cache.isBound(m_id))
 		{
 			return false;
 		}
 
 		Trait::bind(m_id, std::forward<Args>(args)...);
+		m_cache.update(m_id, std::forward<Args>(args)...);
 		return true;
 	}
 
 private:
 	GLuint m_id = 0;
-	static inline GLuint m_current_bound = 0;
+	mutable GLHandleCache m_cache;
 };
+
+

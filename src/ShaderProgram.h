@@ -11,6 +11,7 @@
 
 #include "Aliases.h"
 #include "GLHandle.h"
+#include "Misc.h"
 
 struct ShaderProgramTrait
 {
@@ -26,18 +27,6 @@ struct ShaderProgramTrait
 };
 
 using ShaderProgramHandle = GLHandle<ShaderProgramTrait>;
-
-// FNV-1a
-constexpr uint32 hashString(const char* str, size_t len)
-{
-	uint32 hash = 2166136261u;
-	for (size_t i = 0; i < len; ++i)
-	{
-		hash ^= static_cast<uint32>(*str++);
-		hash *= 16777619u;
-	}
-	return hash;
-}
 
 constexpr uint32_t operator"" _id(const char* str, size_t len)
 {

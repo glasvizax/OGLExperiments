@@ -3,10 +3,21 @@
 #include <fstream>
 #include <iostream>
 #include <span>
+#include <vector>
 
+#include <stb_image.h>
+
+#include "Aliases.h"
 #include "GlobalPaths.h"
 
-ShaderProgram initLoadShaderProgram(
+static std::vector<std::pair<uint32, Texture>> s_textures;
+
+void ResourceManager::init()
+{
+	s_textures.reserve(32);
+}
+
+ShaderProgram ResourceManager::initLoadShaderProgram(
 	std::string_view vertex_name,
 	std::string_view fragment_name
 )
@@ -32,7 +43,72 @@ ShaderProgram initLoadShaderProgram(
 	return program;
 }
 
-bool readFile(const std::filesystem::path& path, std::string& content)
+Texture* ResourceManager::initLoadTexture(std::string_view filename)
+{
+	std::string path = g_content_path + std::string(filename);
+	uint32 hash = hashString(path);
+	auto it = std::find_if(
+		s_textures.begin(),
+		s_textures.end(),
+		[hash](auto& pair) 
+		{ // 
+			return pair.first == hash; 
+		}
+	);
+
+	if (it != s_textures.end())
+	{
+		return &it->second;
+	}
+
+	int width, height, channels;
+	stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+	if (!data)
+	{
+		std::cerr << "coudln't load texture: " << path << std::endl;
+		assert(false);
+		return nullptr;
+	}
+
+	GLint format;
+	switch (channels)
+	{
+		case (1):
+		{
+			format = GL_RED;
+			break;
+		}
+		case (2):
+		{
+			format = GL_RG;
+			break;
+		}
+		case (3):
+		{
+			format = GL_RGB;
+			break;
+		}
+		case (4):
+		{
+			format = GL_RGBA;
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
+
+	auto& pair = s_textures.emplace_back();
+	pair.first = hash;
+	pair.second.init(format, width, height, format, data);
+	return &pair.second;
+}
+
+bool ResourceManager::readFile(
+	const std::filesystem::path& path,
+	std::string& content
+)
 {
 	std::ifstream file(path, std::ios_base::binary);
 

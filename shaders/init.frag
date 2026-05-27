@@ -11,6 +11,8 @@ vec3 light_pos = vec3(0.0f);
 
 uniform vec3 camera_pos;
 
+uniform sampler2D tex;
+
 void main()
 {
 	float ambient = 0.1f;
@@ -24,6 +26,8 @@ void main()
 	float spec_inter = max(dot(to_camera_dir,refl), 0.0f);
 	
 	float spec = pow(spec_inter, 64);
-
-	frag_color = vec4(((ambient + diff + spec) * light_color) * vec3(0.3f), 1.0f);
+	
+	vec3 tex_color = vec3(texture(tex, frag_uv));
+	
+	frag_color = vec4(((ambient + diff + spec) * light_color) * tex_color, 1.0f);
 }
