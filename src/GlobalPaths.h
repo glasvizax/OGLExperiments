@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 
 #ifndef OGLE_SHADERS_DIR

@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "Aliases.h"
+#include "ShaderProgram.h"
 #include "VertexArray.h"
 
 struct Vertex
@@ -54,6 +55,36 @@ inline void VertexArray::autoEnableAttributes<VertexTB>()
 	_AUTO_ENABLE(3, VertexTB, tangent);
 	_AUTO_ENABLE(4, VertexTB, bitangent);
 }
+
+struct Material
+{
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+
+	float shininess;
+};
+
+struct Light
+{
+	glm::vec3 cam_position;
+
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+};
+
+void setMaterial(
+	std::string_view instance_name,
+	const Material& material,
+	ShaderProgram& shader_program
+);
+
+void setLight(
+	std::string_view instance_name,
+	const Light& material,
+	ShaderProgram& shader_program
+);
 
 struct Mesh
 {

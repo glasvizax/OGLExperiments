@@ -28,11 +28,6 @@ struct ShaderProgramTrait
 
 using ShaderProgramHandle = GLHandle<ShaderProgramTrait>;
 
-constexpr uint32_t operator"" _id(const char* str, size_t len)
-{
-	return hashString(str, len);
-}
-
 class ShaderProgram
 {
 

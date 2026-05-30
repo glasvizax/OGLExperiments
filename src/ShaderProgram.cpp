@@ -205,9 +205,11 @@ void ShaderProgram::reflectUniforms()
 			name
 		);
 
-		uint32 hash_name = hashString(name, length);
+		uint32 hash_name = hashString(std::string_view(name, length));
 
 		GLint location = glGetUniformLocation(m_program.get(), name);
+
+		int strcmp_ = strcmp(name, "light_color");
 
 		m_locations.emplace_back(hash_name, location);
 	}

@@ -4,6 +4,7 @@
 
 #include <glad/glad.h>
 
+template <typename Trait>
 class GLHandleCacheDefault
 {
 public:
@@ -26,7 +27,7 @@ private:
 	static inline GLuint m_current_bound = 0;
 };
 
-template <typename Trait, typename GLHandleCache = GLHandleCacheDefault>
+template <typename Trait, typename GLHandleCache = GLHandleCacheDefault<Trait>>
 class GLHandle
 {
 public:
@@ -87,7 +88,7 @@ public:
 	template <typename... Args>
 	bool bind(Args&&... args) const
 	{
-		if (m_id == 0 && m_cache.isBound(m_id))
+		if (m_cache.isBound(m_id))
 		{
 			return false;
 		}

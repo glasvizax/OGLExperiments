@@ -190,15 +190,23 @@ public:
 		glm::vec3 light_scale(0.3f);
 		glm::mat4 light_model(1.0f);
 
-		light_model = glm::scale(light_model, light_scale);
 		light_model = glm::translate(light_model, light_pos);
-
-		glm::vec3 light_color(1.0f);
+		light_model = glm::scale(light_model, light_scale);
 
 		glm::vec3 object_pos(0.0f, 0.0f, -7.0f);
 		glm::mat4 object_model(1.0f);
 		object_model = glm::translate(object_model, object_pos);
-		glm::vec3 object_color(0.75f, 0.2f, 0.2f);
+
+		Material material;
+		material.ambient = glm::vec3(0.1f);
+		material.diffuse = glm::vec3(0.75f, 0.2f, 0.2f);
+		material.specular = glm::vec3(0.5f);
+		material.shininess = 64;
+
+		Light light;
+		light.ambient = glm::vec3(0.2f);
+		light.diffuse = glm::vec3(1.0f);
+		light.specular = glm::vec3(0.4f);
 
 		while (!glfwWindowShouldClose(m_window))
 		{
@@ -218,21 +226,27 @@ public:
 				glm::inverse(glm::transpose(view * object_model))
 			);
 
-			glm::vec3 light_cam_pos = glm::mat3(view) * light_pos;
+			glm::vec3 light_cam_pos = glm::vec3(
+				view * glm::vec4(light_pos, 1.0f)
+			);
 
+			light.cam_position = light_cam_pos;
+
+			object_sp.bind();
 			object_sp.setMat("proj"_id, proj);
 			object_sp.setMat("view"_id, view);
 			object_sp.setMat("model"_id, object_model);
 			object_sp.setMat("normal"_id, object_normal);
-			object_sp.setVec("light_cam_pos"_id, light_cam_pos);
-			object_sp.setVec("object_color"_id, object_color);
-			object_sp.setVec("light_color"_id, light_color);
+			setMaterial("material", material, object_sp);
+			setLight("light", light, object_sp);
+
 			cube_mesh.draw();
 
+			light_sp.bind();
 			light_sp.setMat("proj"_id, proj);
 			light_sp.setMat("view"_id, view);
 			light_sp.setMat("model"_id, light_model);
-			light_sp.setVec("light_color"_id, light_color);
+			light_sp.setVec("light_color"_id, light.diffuse);
 			cube_mesh.draw();
 
 			glfwSwapBuffers(m_window);
