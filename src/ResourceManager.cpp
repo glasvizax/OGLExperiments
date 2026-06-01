@@ -102,6 +102,7 @@ Texture* ResourceManager::initLoadTexture(std::string_view filename)
 	auto& pair = s_textures.emplace_back();
 	pair.first = hash;
 	pair.second.init(format, width, height, format, data);
+	stbi_image_free(data);
 	return &pair.second;
 }
 
@@ -124,6 +125,6 @@ bool ResourceManager::readFile(
 	content.resize(sz);
 
 	file.read(content.data(), sz);
-	content[sz] = '\0';
+	// content[sz] = '\0';
 	return true;
 }

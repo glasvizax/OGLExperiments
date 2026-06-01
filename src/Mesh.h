@@ -10,6 +10,8 @@
 #include "ShaderProgram.h"
 #include "VertexArray.h"
 
+class Texture;
+
 struct Vertex
 {
 	glm::vec3 position;
@@ -58,33 +60,28 @@ inline void VertexArray::autoEnableAttributes<VertexTB>()
 
 struct Material
 {
-	glm::vec3 ambient;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
+	std::string_view instance_name = "material";
+
+	Texture* diffuse_map = nullptr;
+	Texture* specular_map = nullptr;
 
 	float shininess;
+
+	void setShaderObject(ShaderProgram& program) const;
 };
 
 struct Light
 {
+	std::string_view instance_name = "light";
+
 	glm::vec3 cam_position;
 
 	glm::vec3 ambient;
 	glm::vec3 diffuse;
 	glm::vec3 specular;
+
+	void setShaderObject(ShaderProgram& program) const;
 };
-
-void setMaterial(
-	std::string_view instance_name,
-	const Material& material,
-	ShaderProgram& shader_program
-);
-
-void setLight(
-	std::string_view instance_name,
-	const Light& material,
-	ShaderProgram& shader_program
-);
 
 struct Mesh
 {

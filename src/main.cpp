@@ -9,6 +9,7 @@
 
 #include "Aliases.h"
 #include "Camera.h"
+#include "Texture.h"
 #include "Mesh.h"
 #include "ResourceManager.h"
 #include "ShaderProgram.h"
@@ -118,8 +119,8 @@ public:
 
 		glfwSetErrorCallback(glfwErrorCallback);
 
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		m_window = glfwCreateWindow( //
@@ -154,9 +155,9 @@ public:
 							 static_cast<float>(height);
 
 		m_camera.setAspectRatio(aspect_ratio);
-		return true;
-
 		m_resource_manager.init();
+
+		return true;
 	}
 
 	int mainLoop()
@@ -183,8 +184,8 @@ public:
 			"object.frag"
 		);
 
-		// Texture* af_tex =
-		// m_resource_manager.initLoadTexture("awesomeface.png");
+		Texture* cont_diffuse_map = m_resource_manager.initLoadTexture("container2.png");
+		Texture* cont_specular_map = m_resource_manager.initLoadTexture("container2_specular.png");
 
 		glm::vec3 light_pos(-7.0f, -2.0f, 4.0f);
 		glm::vec3 light_scale(0.3f);
@@ -198,10 +199,9 @@ public:
 		object_model = glm::translate(object_model, object_pos);
 
 		Material material;
-		material.ambient = glm::vec3(0.1f);
-		material.diffuse = glm::vec3(0.75f, 0.2f, 0.2f);
-		material.specular = glm::vec3(0.5f);
-		material.shininess = 64;
+		material.diffuse_map = cont_diffuse_map;
+		material.specular_map = cont_specular_map;
+		material.shininess = 256;
 
 		Light light;
 		light.ambient = glm::vec3(0.2f);
@@ -237,9 +237,8 @@ public:
 			object_sp.setMat("view"_id, view);
 			object_sp.setMat("model"_id, object_model);
 			object_sp.setMat("normal"_id, object_normal);
-			setMaterial("material", material, object_sp);
-			setLight("light", light, object_sp);
-
+			object_sp.setObject(material);
+			object_sp.setObject(light);
 			cube_mesh.draw();
 
 			light_sp.bind();

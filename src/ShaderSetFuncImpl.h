@@ -123,3 +123,4 @@ inline void ShaderProgram::setMatArray(
 	uniformMatArrayFunc<N, T>(location, array, count);
 	// checkGeneralErrorGL(m_debug_name);
 }
+

@@ -5,6 +5,7 @@
 #include <string>
 #include <type_traits>
 #include <unordered_map>
+#include <utility>
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -27,6 +28,16 @@ struct ShaderProgramTrait
 };
 
 using ShaderProgramHandle = GLHandle<ShaderProgramTrait>;
+
+class ShaderProgram;
+
+template <typename T, typename... Args>
+concept ShaderObject = requires(
+	const T& obj,
+	ShaderProgram& prog,
+	Args&&... args
+) //
+{ obj.setShaderObject(prog, std::forward<Args>(args)...); };
 
 class ShaderProgram
 {
@@ -68,6 +79,14 @@ public:
 		const glm::mat<N, N, T>* const array,
 		GLsizei count
 	);
+
+	template <typename T, typename... Args>
+		requires ShaderObject<T, Args...>
+	void setObject(const T& object, Args&&... args)
+	{
+		bind();
+		object.setShaderObject(*this, std::forward<Args>(args)...);
+	}
 
 private:
 	GLint getLocation(uint32 hash_name);

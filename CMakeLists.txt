@@ -103,3 +103,8 @@ target_compile_definitions(
         OGLE_SHADERS_DIR="${OGLE_SHADERS_DIR}"
 )
 
+if(MSVC)
+    target_compile_options(Main PRIVATE /W4)
+else()
+    target_compile_options(Main PRIVATE -Wall -Wextra -Wpedantic)
+endif()
